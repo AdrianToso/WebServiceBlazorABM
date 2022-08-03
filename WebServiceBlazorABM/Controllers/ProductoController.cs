@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using WebServiceBlazorABM.Models;
 using WebServiceBlazorABM.Models.Request;
@@ -14,7 +15,7 @@ namespace WebServiceBlazorABM.Controllers
         [HttpGet]
        public IActionResult Get()
         {
-            Respuesta  _respuesta = new Respuesta();
+            Respuesta<List<Producto>> _respuesta = new Respuesta<List<Producto>>();
             try
             {
                 using (BlazorABMContext db = new BlazorABMContext())
@@ -31,10 +32,30 @@ namespace WebServiceBlazorABM.Controllers
             }
             return Ok(_respuesta);
         }
+        [HttpGet("{id:int}")]
+        public IActionResult Get(int Id)
+        {
+            Respuesta<Producto> _respuesta = new Respuesta<Producto>();
+            try
+            {
+                using (BlazorABMContext db = new BlazorABMContext())
+                {
+                    var lst = db.Productos.Find(Id);
+                    _respuesta.Success = 1;
+                    _respuesta.Data = lst;
+
+                }
+            }
+            catch (Exception ex)
+            {
+                _respuesta.ErrCode = ex.Message;
+            }
+            return Ok(_respuesta);
+        }
         [HttpPost]
         public IActionResult Add(ProductoRequest model)
         {
-            Respuesta _respuesta = new Respuesta();
+            Respuesta<object> _respuesta = new Respuesta<object>();
             try
             {
                 using (BlazorABMContext db = new BlazorABMContext())
@@ -57,7 +78,7 @@ namespace WebServiceBlazorABM.Controllers
         [HttpPut]
         public IActionResult Edit(ProductoRequest model)
         {
-            Respuesta _respuesta = new Respuesta();
+            Respuesta<object> _respuesta = new Respuesta<object>();
             try
             {
                 using (BlazorABMContext db = new BlazorABMContext())
@@ -81,7 +102,7 @@ namespace WebServiceBlazorABM.Controllers
         [HttpDelete("{id:int}")]
         public IActionResult Delete(int id)
         {
-            Respuesta _respuesta = new Respuesta();
+            Respuesta<object> _respuesta = new Respuesta<object>();
             try
             {
                 using (BlazorABMContext db = new BlazorABMContext())
